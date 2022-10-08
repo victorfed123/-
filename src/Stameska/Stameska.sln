@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31729.503
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stameska.View", "Stameska.View\Stameska.View.csproj", "{846FBEB4-3149-4350-A477-F231A49FCF7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stameska.Model", "Stameska.Model\Stameska.Model.csproj", "{945E6F21-2A76-4DFD-8F05-C82210C276AA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{846FBEB4-3149-4350-A477-F231A49FCF7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{846FBEB4-3149-4350-A477-F231A49FCF7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{846FBEB4-3149-4350-A477-F231A49FCF7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{846FBEB4-3149-4350-A477-F231A49FCF7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{945E6F21-2A76-4DFD-8F05-C82210C276AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{945E6F21-2A76-4DFD-8F05-C82210C276AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{945E6F21-2A76-4DFD-8F05-C82210C276AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{945E6F21-2A76-4DFD-8F05-C82210C276AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FA21C313-8B94-46C3-84EA-13564BEE7816}
+	EndGlobalSection
+EndGlobal
