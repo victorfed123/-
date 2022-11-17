@@ -56,7 +56,7 @@ namespace Stameska.Model
 
                     ksDocument2D Ring = (ksDocument2D)iDefinitionSketch.BeginEdit();
 
-                    Ring.ksCircle(0, 0, chiselData.RingD/2,1);
+                    Ring.ksCircle(0, 0, chiselData.RingD / 2, 1);
 
                     iDefinitionSketch.EndEdit();
 
@@ -75,7 +75,7 @@ namespace Stameska.Model
 
                                 extrProp.direction = (short)Direction_Type.dtNormal; // направление выдавливания (прямое)
                                 extrProp.typeNormal = (short)End_Type.etBlind; // тип выдавливания (строго на глубину)
-                                extrProp.depthNormal = chiselData.BladeL/50; // глубина выдавливания
+                                extrProp.depthNormal = chiselData.BladeL / 50; // глубина выдавливания
                                 thinProp.thin = false; // без тонкой стенки
                                 entityExtr.Create(); // создадим операцию
                             }
@@ -86,44 +86,44 @@ namespace Stameska.Model
             /// Создание рукояти
             // создадим новый эскиз
             ksEntity hangleSketch = (ksEntity)Chisel.NewEntity((short)Obj3dType.o3d_sketch);
-                if (hangleSketch != null)
+            if (hangleSketch != null)
+            {
+                // интерфейс свойств эскиза
+                ksSketchDefinition hangleSketchDef = (ksSketchDefinition)hangleSketch.GetDefinition();
+                if (hangleSketchDef != null)
                 {
-                    // интерфейс свойств эскиза
-                    ksSketchDefinition hangleSketchDef = (ksSketchDefinition)hangleSketch.GetDefinition();
-                    if (hangleSketchDef != null)
+                    hangleSketchDef.SetPlane(planeXOY); // установим плоскость
+                    hangleSketch.Create(); // создадим эскиз
+
+                    // интерфейс редактора эскиза
+                    ksDocument2D hangle = (ksDocument2D)hangleSketchDef.BeginEdit();
+                    hangle.ksCircle(0, 0, chiselData.ChiselW / 2, 1);
+                    hangleSketchDef.EndEdit(); // завершение редактирования эскиза
+
+                    // приклеим выдавливанием
+                    ksEntity entityBossExtr = (ksEntity)Chisel.NewEntity((short)Obj3dType.o3d_bossExtrusion);
+                    if (entityBossExtr != null)
                     {
-                        hangleSketchDef.SetPlane(planeXOY); // установим плоскость
-                        hangleSketch.Create(); // создадим эскиз
-
-                        // интерфейс редактора эскиза
-                        ksDocument2D hangle = (ksDocument2D)hangleSketchDef.BeginEdit();
-                        hangle.ksCircle(0, 0, chiselData.ChiselW/2,1);
-                        hangleSketchDef.EndEdit(); // завершение редактирования эскиза
-
-                        // приклеим выдавливанием
-                        ksEntity entityBossExtr = (ksEntity)Chisel.NewEntity((short)Obj3dType.o3d_bossExtrusion);
-                        if (entityBossExtr != null)
+                        ksBossExtrusionDefinition bossExtrDef = (ksBossExtrusionDefinition)entityBossExtr.GetDefinition();
+                        if (bossExtrDef != null)
                         {
-                            ksBossExtrusionDefinition bossExtrDef = (ksBossExtrusionDefinition)entityBossExtr.GetDefinition();
-                            if (bossExtrDef != null)
+                            ksExtrusionParam
+                            extrProp = (ksExtrusionParam)bossExtrDef.ExtrusionParam(); // интерфейс структуры параметров выдавливания
+                            ksThinParam thinProp = (ksThinParam)bossExtrDef.ThinParam(); // интерфейс структуры параметров тонкой стенки
+                            if (extrProp != null && thinProp != null)
                             {
-                                ksExtrusionParam
-                                extrProp = (ksExtrusionParam)bossExtrDef.ExtrusionParam(); // интерфейс структуры параметров выдавливания
-                                ksThinParam thinProp = (ksThinParam)bossExtrDef.ThinParam(); // интерфейс структуры параметров тонкой стенки
-                                if (extrProp != null && thinProp != null)
-                                {
-                                    bossExtrDef.SetSketch(hangleSketch); // эскиз операции выдавливания
+                                bossExtrDef.SetSketch(hangleSketch); // эскиз операции выдавливания
 
-                                    extrProp.direction = (short)Direction_Type.dtReverse; // направление выдавливания (обратное)
-                                    extrProp.typeNormal = (short)End_Type.etBlind; // тип выдавливания (строго на глубину)
-                                    extrProp.depthReverse = chiselData.HangleL; // глубина выдавливания
-                                    thinProp.thin = false; // без тонкой стенки
-                                    entityBossExtr.Create(); // создадим операцию
-                                }
+                                extrProp.direction = (short)Direction_Type.dtReverse; // направление выдавливания (обратное)
+                                extrProp.typeNormal = (short)End_Type.etBlind; // тип выдавливания (строго на глубину)
+                                extrProp.depthReverse = chiselData.HangleL; // глубина выдавливания
+                                thinProp.thin = false; // без тонкой стенки
+                                entityBossExtr.Create(); // создадим операцию
                             }
                         }
                     }
                 }
+            }
 
             /// Создание бруска
             /// // создадим новый эскиз
@@ -149,7 +149,7 @@ namespace Stameska.Model
                     // интерфейс редактора эскиза
                     ksDocument2D bar = (ksDocument2D)barSketchDef.BeginEdit();
 
-                    bar.ksLineSeg(-chiselData.BladeH/2, -chiselData.BladeH/2, -chiselData.BladeH/2, chiselData.BladeH/2, 1);
+                    bar.ksLineSeg(-chiselData.BladeH / 2, -chiselData.BladeH / 2, -chiselData.BladeH / 2, chiselData.BladeH / 2, 1);
                     bar.ksLineSeg(-chiselData.BladeH / 2, chiselData.BladeH / 2, chiselData.BladeH / 2, chiselData.BladeH / 2, 1);
                     bar.ksLineSeg(chiselData.BladeH / 2, chiselData.BladeH / 2, chiselData.BladeH / 2, -chiselData.BladeH / 2, 1);
                     bar.ksLineSeg(chiselData.BladeH / 2, -chiselData.BladeH / 2, -chiselData.BladeH / 2, -chiselData.BladeH / 2, 1);
@@ -171,7 +171,7 @@ namespace Stameska.Model
 
                                 extrProp.direction = (short)Direction_Type.dtNormal; // направление выдавливания (обратное)
                                 extrProp.typeNormal = (short)End_Type.etBlind; // тип выдавливания (строго на глубину)
-                                extrProp.depthNormal = chiselData.BladeL/10; // глубина выдавливания
+                                extrProp.depthNormal = chiselData.BladeL / 10; // глубина выдавливания
                                 thinProp.thin = false; // без тонкой стенки
                                 entityBossExtr.Create(); // создадим операцию
                             }
@@ -188,7 +188,7 @@ namespace Stameska.Model
             ksPlaneOffsetDefinition ksPlaneOffsetDefinitionBlade = (ksPlaneOffsetDefinition)ksEntityPlaneOffsetBlade.GetDefinition();
             ksPlaneOffsetDefinitionBlade.SetPlane(ksEntityPlaneXOYBlade);
             ksPlaneOffsetDefinitionBlade.direction = true;
-            ksPlaneOffsetDefinitionBlade.offset = chiselData.BladeL *3 / 25 ;
+            ksPlaneOffsetDefinitionBlade.offset = chiselData.BladeL * 3 / 25;
             ksEntityPlaneOffsetBlade.Create();
 
             if (bladeSketch != null)
@@ -203,10 +203,10 @@ namespace Stameska.Model
                     // интерфейс редактора эскиза
                     ksDocument2D blade = (ksDocument2D)bladeSketchDef.BeginEdit();
 
-                    blade.ksLineSeg(-chiselData.ChiselW/2, -chiselData.BladeH / 2, -chiselData.ChiselW/2, chiselData.BladeH / 2, 1);
-                    blade.ksLineSeg(-chiselData.ChiselW/2, chiselData.BladeH / 2, chiselData.ChiselW/2, chiselData.BladeH / 2, 1);
-                    blade.ksLineSeg(chiselData.ChiselW/2, chiselData.BladeH / 2, chiselData.ChiselW/2, -chiselData.BladeH / 2, 1);
-                    blade.ksLineSeg(chiselData.ChiselW/2, -chiselData.BladeH / 2, -chiselData.ChiselW/2, -chiselData.BladeH / 2, 1);
+                    blade.ksLineSeg(-chiselData.ChiselW / 2, -chiselData.BladeH / 2, -chiselData.ChiselW / 2, chiselData.BladeH / 2, 1);
+                    blade.ksLineSeg(-chiselData.ChiselW / 2, chiselData.BladeH / 2, chiselData.ChiselW / 2, chiselData.BladeH / 2, 1);
+                    blade.ksLineSeg(chiselData.ChiselW / 2, chiselData.BladeH / 2, chiselData.ChiselW / 2, -chiselData.BladeH / 2, 1);
+                    blade.ksLineSeg(chiselData.ChiselW / 2, -chiselData.BladeH / 2, -chiselData.ChiselW / 2, -chiselData.BladeH / 2, 1);
                     bladeSketchDef.EndEdit(); // завершение редактирования эскиза
 
                     // приклеим выдавливанием
@@ -216,8 +216,7 @@ namespace Stameska.Model
                         ksBossExtrusionDefinition bossExtrDef = (ksBossExtrusionDefinition)entityBossExtr.GetDefinition();
                         if (bossExtrDef != null)
                         {
-                            ksExtrusionParam
-                            extrProp = (ksExtrusionParam)bossExtrDef.ExtrusionParam(); // интерфейс структуры параметров выдавливания
+                            ksExtrusionParam extrProp = (ksExtrusionParam)bossExtrDef.ExtrusionParam(); // интерфейс структуры параметров выдавливания
                             ksThinParam thinProp = (ksThinParam)bossExtrDef.ThinParam(); // интерфейс структуры параметров тонкой стенки
                             if (extrProp != null && thinProp != null)
                             {
@@ -226,21 +225,47 @@ namespace Stameska.Model
                                 extrProp.typeNormal = (short)End_Type.etBlind; // тип выдавливания (строго на глубину)
                                 extrProp.depthNormal = chiselData.BladeL; // глубина выдавливания
                                 thinProp.thin = false; // без тонкой стенки
-                                entityBossExtr.Create(); // создадим операцию
-                                
-                                
+                                entityBossExtr.Create(); // создадим операцию                         
                             }
                         }
                     }
                 }
             }
-            ksEntity iEdge = (ksEntity)Chisel.NewEntity((short)Obj3dType.o3d_edge);
-            if (iEdge != null)
+            ksEntity iChamferSide = (ksEntity)Chisel.NewEntity((short)Obj3dType.o3d_chamfer);
+            if (iChamferSide != null)
             {
-                ksEdgeDefinition iEdgeDefenition = (ksEdgeDefinition)iEdge.GetDefinition();
-                if (iEdgeDefenition !=null)
+                ksChamferDefinition chamferDefinitionS = (ksChamferDefinition)iChamferSide.GetDefinition();
+                if (chamferDefinitionS != null)
                 {
+                    chamferDefinitionS.tangent = true;
 
+                    chamferDefinitionS.SetChamferParam(true, (chiselData.ChiselW - chiselData.BladeH) / 2, chiselData.BladeH);
+                    var ar = chamferDefinitionS.array();
+                    EntityCollection iCollection = Chisel.EntityCollection((short)Obj3dType.o3d_edge);
+                    iCollection.SelectByPoint(chiselData.ChiselW / 2, chiselData.BladeH / 2, chiselData.BladeL);
+                    ar.Add(iCollection.Last());
+
+                    iCollection = Chisel.EntityCollection((short)Obj3dType.o3d_edge);
+                    iCollection.SelectByPoint(-chiselData.ChiselW / 2, chiselData.BladeH / 2, chiselData.BladeL);
+                    ar.Add(iCollection.Last());
+                    iChamferSide.Create();
+                }
+            }
+            ksEntity iChamferFront = (ksEntity)Chisel.NewEntity((short)Obj3dType.o3d_chamfer);
+            if (iChamferFront != null)
+            {
+                ksChamferDefinition chamferDefinitionF = (ksChamferDefinition)iChamferFront.GetDefinition();
+                if (chamferDefinitionF != null)
+                {
+                    chamferDefinitionF.tangent = true;
+
+
+                    chamferDefinitionF.SetChamferParam(true, chiselData.BladeH, chiselData.BladeL/5);
+                    var ar1 = chamferDefinitionF.array();
+                    EntityCollection iCollection1 = Chisel.EntityCollection((short)Obj3dType.o3d_edge);
+                    iCollection1.SelectByPoint(0, chiselData.BladeH / 2, (chiselData.BladeL) + (chiselData.BladeL / 50) + (chiselData.BladeL / 10));
+                    ar1.Add(iCollection1.Last());
+                    iChamferFront.Create();
                 }
             }
         }
