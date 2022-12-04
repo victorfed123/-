@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Stameska.Model;
-
+using Stameska.Tests;
 
 namespace Stameska.View
 {
@@ -17,7 +17,7 @@ namespace Stameska.View
         /// <summary>
         /// переменная ошибки ввода параментра длины ручки
         /// </summary>
-        private string _errorTextBoxHangleL = string.Empty;
+        private string _errorTextBoxHandleL = string.Empty;
         private string _errorTextBoxBladeL = string.Empty;
         private string _errorTextBoxBladeH = string.Empty;
         private string _errorTextBoxRing = string.Empty;
@@ -58,8 +58,18 @@ namespace Stameska.View
         /// <param name="currentTextBox"></param>
         private void IfKeyPress(KeyPressEventArgs e, TextBox currentTextBox)
         {
-            if (Char.IsNumber(e.KeyChar) | ((e.KeyChar == Convert.ToChar(",")) &&
-            !currentTextBox.Text.Contains(",")) | e.KeyChar == '\b')
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                SendKeys.Send("{Tab}");
+            }
+            if (e.KeyChar == (char)Keys.Space && CreateButton.Enabled)
+            {
+                CreateButton_Click(null, null);
+            }
+            if (Char.IsNumber(e.KeyChar) | ((e.KeyChar == Convert.ToChar(","))
+            && !currentTextBox.Text.Contains(","))
+            | e.KeyChar == '\b' | e.KeyChar == (char)3 | e.KeyChar == (char)22
+            | e.KeyChar == (char)1 | e.KeyChar == (char)24)
             {
                 return;
             }
@@ -71,9 +81,9 @@ namespace Stameska.View
         /// </summary>
         private void ReloadChiselData(TextBox currentTextBox, double chiselDataParameter)
         {          
-            if ((HangleTextBox.Text != string.Empty) && (chiselDataParameter == _chiselData.HangleL) && (currentTextBox == HangleTextBox))
+            if ((HandleTextBox.Text != string.Empty) && (chiselDataParameter == _chiselData.HandleL) && (currentTextBox == HandleTextBox))
             {
-                _chiselData.HangleL = Convert.ToDouble(HangleTextBox.Text);
+                _chiselData.HandleL = Convert.ToDouble(HandleTextBox.Text);
             }
             if ((BladeLengthTextBox.Text != string.Empty) && (chiselDataParameter == _chiselData.BladeL) && (currentTextBox == BladeLengthTextBox))
             {
@@ -99,9 +109,11 @@ namespace Stameska.View
         private void OnOffCreateButton()
         {
             if ((_chiselData.ChiselW != 0 && _chiselData.BladeH != 0 && _chiselData.BladeL != 0
-            && _chiselData.HangleL != 0 && _chiselData.RingD != 0) && (_errorTextBoxHangleL == ""
-            && _errorTextBoxBladeL == "" && _errorTextBoxBladeH == "" && _errorTextBoxRing == ""
-            && _errorTextBoxChiselW == ""))
+            && _chiselData.HandleL != 0 && _chiselData.RingD != 0)
+            && (HandleTextBox.BackColor != _errorColor && BladeLengthTextBox.BackColor != _errorColor && BladeHeigthTextBox.BackColor != _errorColor &&
+            RingTextBox.BackColor != _errorColor && ChiselWidthTextBox.BackColor != _errorColor) &&
+            (HandleTextBox.Text != string.Empty && BladeHeigthTextBox.Text != string.Empty
+            && BladeLengthTextBox.Text != string.Empty && RingTextBox.Text != string.Empty && ChiselWidthTextBox.Text != string.Empty))
             {
                 CreateButton.Enabled = true;
             }
@@ -116,13 +128,13 @@ namespace Stameska.View
         /// </summary>
         private void CheckAfterInput()
         {
-            OnOffCreateButton();
             string errorMesaage = string.Empty;
-            IfTextChanged(HangleTextBox, errorMesaage, _chiselData.HangleL);
+            IfTextChanged(HandleTextBox, errorMesaage, _chiselData.HandleL);
             IfTextChanged(BladeHeigthTextBox, errorMesaage, _chiselData.BladeH);
             IfTextChanged(BladeLengthTextBox, errorMesaage, _chiselData.BladeL);
             IfTextChanged(RingTextBox, errorMesaage, _chiselData.RingD);
             IfTextChanged(ChiselWidthTextBox, errorMesaage, _chiselData.ChiselW);
+            OnOffCreateButton();
         }
 
         /// <summary>
@@ -146,29 +158,34 @@ namespace Stameska.View
         /// <summary>
         /// Ставит ноль, если в начале стоит запятая
         /// </summary>
-        /// <param name="cuurentTextBox"></param>
-        private void StartstWithComma(TextBox cuurentTextBox)
+        /// <param name="currentTextBox"></param>
+        private void StartstWithComma(TextBox currentTextBox)
         {
-            if (Convert.ToString(cuurentTextBox.Text).StartsWith(","))
+            if (Convert.ToString(currentTextBox.Text).StartsWith(","))
             {
-                if (cuurentTextBox.Text.Length != 0)
+                if (currentTextBox.Text.Length != 0)
                 {
-                    cuurentTextBox.Text = cuurentTextBox.Text.Insert(0, "0");
+                    currentTextBox.Text = currentTextBox.Text.Insert(0, "0");
                 }
+
             }
         }
 
         /// <summary>
         /// Удаляет запятую, если она стоит в конце
         /// </summary>
-        /// <param name="cuurentTextBox"></param>
-        private void EndsWithComma(TextBox cuurentTextBox)
+        /// <param name="currentTextBox"></param>
+        private void EndsWithComma(TextBox currentTextBox)
         {
-            if (Convert.ToString(cuurentTextBox.Text).EndsWith(","))
+            if (currentTextBox.Text.Contains(","))
             {
-                if (cuurentTextBox.Text.Length != 0)
+                currentTextBox.Text = currentTextBox.Text.TrimEnd('0');
+            }
+            if (Convert.ToString(currentTextBox.Text).EndsWith(","))
+            {
+                if (currentTextBox.Text.Length != 0)
                 {
-                    cuurentTextBox.Text = cuurentTextBox.Text.Remove(cuurentTextBox.Text.Length - 1);
+                    currentTextBox.Text = currentTextBox.Text.Remove(currentTextBox.Text.Length - 1);
                 }
             }
         }
@@ -187,14 +204,11 @@ namespace Stameska.View
                 currentTextBox.BackColor = _trueColor;
                 toolTipInformation.SetToolTip(currentTextBox, string.Empty);
                 errorMessage = string.Empty;
-                /*                OKButtonON();
-                */
             }
             catch (Exception exception)
             {
                 OutputAfterErrorTextBox(exception, errorMessage, currentTextBox);
             }
-
             StartstWithComma(currentTextBox);
         }
 
@@ -225,52 +239,46 @@ namespace Stameska.View
                 string s = str.Replace(".", ",");
                 textBox.Clear();
                 textBox.AppendText(str.Replace(".", ","));
-
             }
         }
 
         /// <summary>
-        /// обновляет текст в HangleTextBox
+        /// обновляет текст в HandleTextBox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HangleTextBox_TextChanged(object sender, EventArgs e)
+        private void TextBox_TextChanged(object sender, EventArgs e)
         {
-            IfTextChanged(HangleTextBox, _errorTextBoxHangleL, _chiselData.HangleL);
             CheckAfterInput();
         }
 
         /// <summary>
-        /// функция выхода из HangleTextBox
+        /// функция выхода из HandleTextBox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HangleTextBox_Leave(object sender, EventArgs e)
+        private void HandleTextBox_Leave(object sender, EventArgs e)
         {
-            IfTextBoxLeave(HangleTextBox, _errorTextBoxHangleL);
+            IfTextBoxLeave(HandleTextBox, _errorTextBoxHandleL);
             CheckAfterInput();
         }
 
         /// <summary>
-        /// обработчик события нажатия на клавишу в HangleTextBox
+        /// обработчик события нажатия на клавишу в HandleTextBox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void HangleTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        private void HandleTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            IfKeyPress(e, HangleTextBox);
+            IfKeyPress(e, HandleTextBox);
         }
+
 
         /// <summary>
         /// Валидация для BladeLengthTextBox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BladeLengthTextBox_TextChanged(object sender, EventArgs e)
-        {
-            IfTextChanged(BladeLengthTextBox, _errorTextBoxBladeL, _chiselData.BladeL);
-            CheckAfterInput();
-        }
 
         private void BladeLengthTextBox_Leave(object sender, EventArgs e)
         {
@@ -288,11 +296,6 @@ namespace Stameska.View
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BladeHeigthTextBox_TextChanged(object sender, EventArgs e)
-        {
-            IfTextChanged(BladeHeigthTextBox, _errorTextBoxBladeH, _chiselData.BladeH);
-            CheckAfterInput();
-        }
 
         private void BladeHeigthTextBox_Leave(object sender, EventArgs e)
         {
@@ -310,11 +313,6 @@ namespace Stameska.View
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void RingTextBox_TextChanged(object sender, EventArgs e)
-        {
-            IfTextChanged(RingTextBox, _errorTextBoxRing, _chiselData.RingD);
-            CheckAfterInput();
-        }
 
         private void RingTextBox_Leave(object sender, EventArgs e)
         {
@@ -332,11 +330,6 @@ namespace Stameska.View
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ChiselWidthTextBox_TextChanged(object sender, EventArgs e)
-        {
-            IfTextChanged(ChiselWidthTextBox, _errorTextBoxChiselW, _chiselData.ChiselW);
-            CheckAfterInput();
-        }
 
         private void ChiselWidthTextBox_Leave(object sender, EventArgs e)
         {
@@ -349,9 +342,17 @@ namespace Stameska.View
             IfKeyPress(e, ChiselWidthTextBox);
         }
 
+        /// <summary>
+        /// открывет комас и создает документ
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CreateButton_Click(object sender, EventArgs e)
         {
+/*            StressTest stressTest = new StressTest();
+            stressTest.TestAddIn();*/
             _kompasApp = new KompasConnector();
+
             if (!_kompasApp.CreateDocument3D())
             {
                 return;
@@ -360,7 +361,38 @@ namespace Stameska.View
 
             if (_manager != null)
             {
-                _manager.BuildModel(_chiselData);
+                if (radioButtonStraightModel.Checked == true)
+                {
+                    _manager.BuildModel(_chiselData);
+                }
+                if (radioButtonCornerModel.Checked == true)
+                {
+                    _manager.BuildCornerModel(_chiselData);
+                }
+            }
+        }
+
+        private void radioButtonModel_Click(object sender, EventArgs e)
+        {
+            if (radioButtonStraightModel.Checked == true)
+            {
+                HandleLable.Text = "Handle length";
+                BladeLengthLabel.Text = "Blade length";
+                BladeHeightLabel.Text = "Blade height";
+                DiametrLabel.Text = "Ring diametr";
+                WidthLabel.Text = "Chisel width";
+                panelChiselPhoto.BackgroundImage = Properties.Resources.StraightChisel;
+            }
+
+            if (radioButtonCornerModel.Checked == true)
+            {
+                HandleLable.Text = "Handle length";
+                BladeLengthLabel.Text = "Blade length";
+                BladeHeightLabel.Text = "Blade height";
+                DiametrLabel.Text = "Ring diametr";
+                WidthLabel.Text = "Chisel width";
+                panelChiselPhoto.BackgroundImage = Properties.Resources.CornerChisel;
+
             }
         }
     }

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Stameska.Model
 {
@@ -12,17 +8,19 @@ namespace Stameska.Model
         /// <summary>
         /// Допстимые значение длины рукояти 
         /// </summary>
-        public double MINHL, MAXHL;
+        private double _minl = 120, _maxl = 200; 
+        
+        ///ПРИВАТНЫЕ ПОЛЯ С НИЖНИМИ ПОДЧЕРКИВАНИЯМИ 
 
         /// <summary>
         /// поле длины рукояти
         /// </summary>
-        private double _hangleL;
+        private double _handleL;
 
         /// <summary>
         /// Допстимые значение длины лезвия 
         /// </summary>
-        public double MINBL=120, MAXBL=240;
+        private double _minbl=120, _maxbl=240;
 
         /// <summary>
         /// поле длины лезвия
@@ -32,7 +30,7 @@ namespace Stameska.Model
         /// <summary>
         /// Допстимые значение высоты лезвия
         /// </summary>
-        public double MINBH, MAXBH;
+        private double _minbh = 10, _maxbh = 20;
 
         /// <summary>
         /// поле высоты лезвия
@@ -42,7 +40,7 @@ namespace Stameska.Model
         /// <summary>
         /// Допстимые значение даметра кольца 
         /// </summary>
-        public double MINRD, MAXRD;
+        private double _minrd = 11, _maxrd = 45;
 
         /// <summary>
         /// поле диаметра кольца
@@ -52,7 +50,7 @@ namespace Stameska.Model
         /// <summary>
         /// Допстимые значение ширины стамески
         /// </summary>
-        public double MINC, MAXC;
+        private double _minc = 25, _maxc = 50;
 
         /// <summary>
         /// поле ширины стамески 
@@ -65,9 +63,8 @@ namespace Stameska.Model
         /// <param name="MAX"></param>
         /// <param name="MIN"></param>
         /// <param name="value"></param>
-        private void MaxMinChek(double MAX, double MIN, double value)
+        private void MaxMinCheсk(double MAX, double MIN, double value)
         {
-            
             if (value == 0)
             {
                 throw new ArgumentException("Enter the data");
@@ -76,47 +73,42 @@ namespace Stameska.Model
             {
                 throw new ArgumentException("Enabled value range: " + MIN + "-" + MAX + "mm");
             }
-            if (MIN >= MAX)
-            {
-                throw new ArgumentException("Enabled value range: " + MIN + "mm");
-            }
         }
 
-/*        private void RangeCheck(double MAX, double MIN, double parameter)
-        {
-            if (value)
-        }*/
-
         /// <summary>
-        /// возвращает или задает длину для Hangle
+        /// возвращает или задает длину для Handle
         /// </summary>
-        public double HangleL
+        public double HandleL
         {
-            get => _hangleL;
+            get => _handleL;
             set
             {
                 if (value < 120 || value > 200)
                 {
-                    throw new ArgumentException("Enter correct count");
+                    MaxMinCheсk(_maxl, _minl, value);
                 }
                 else
                 {
                     if (_bladeL == 0)
                     {
-                        MINHL = 120;
-                        MAXHL = 200;
-
+                        _minl = 120;
+                        _maxl = 200;
                     }
                     else
                     {
-                        if (MINHL < 120)
-                            MINHL = 120;
-                        else
-                        MINHL = _bladeL / 1.2;
-                        MAXHL = _bladeL;
+                        _maxl = _bladeL;
+                        _minl = _bladeL / 1.2;
+                        if (_minl < 120)
+                        {
+                            _minl = 120;
+                        }    
+                        if (_maxl > 200)
+                        {
+                            _maxl = 200;
+                        }
                     }
-                    _hangleL = value;
-                    MaxMinChek(MAXHL, MINHL, value);
+                    MaxMinCheсk(_maxl, _minl, value);
+                    _handleL = value;
                 }
             }
         }
@@ -131,27 +123,30 @@ namespace Stameska.Model
             {
                 if (value < 120 || value > 240)
                 {
-                    throw new ArgumentException("Enter correct count");
+                    MaxMinCheсk(_maxbl, _minbl, value);
                 }
                 else
                 {
-                    if (_hangleL == 0)
+                    if (_handleL == 0)
                     {
-                        MINBL = 120;
-                        MAXBL = 240;
-
+                        _minbl = 120;
+                        _maxbl = 240;
                     }
                     else
                     {
-                        if (MAXBL > 240)
-                            MAXBL = 240;
-                        else
-                            MAXBL = 1.2 * _hangleL;
-                        MINBL = _hangleL;
-
+                        _minbl = _handleL;
+                        _maxbl = 1.2 * _handleL;
+                        if (_maxbl > 240)
+                        {
+                            _maxbl = 240;
+                        }
+                        if (_minbl < 120)
+                        {
+                            _minbl = 120;
+                        }
                     }
+                    MaxMinCheсk(_maxbl, _minbl, value);
                     _bladeL = value;
-                    MaxMinChek(MAXBL, MINBL, value);
                 }
             }
         }
@@ -166,27 +161,72 @@ namespace Stameska.Model
             {
                 if (value < 10 || value > 20)
                 {
-                    throw new ArgumentException("Enter correct count");
+                    MaxMinCheсk(_maxbh, _minbh, value);
                 }
                 else
                 {
                     if (_chiselW == 0)
                     {
-                        MINBH = 10;
-                        MAXBH = 20;
+                        _minbh = 10;
+                        _maxbh = 20;
                     }
                     else
                     {
-                        if (MAXBH > 20)
-                            MAXBH = 20;
-                        else MAXBH = _chiselW;
-                        if (MINBH < 10)
-                            MINBH = 10;
-                        else MINBH = _chiselW / 2.5;
+                        _minbh = _chiselW / 2.5;
+                        _maxbh = _chiselW;
+
+
+                        if (_maxbh > 20)
+                        {
+                            _maxbh = 20;
+                        }
+                        if (_minbh < 10)
+                        {
+                            _minbh = 10;
+                        }
                     }
+                    MaxMinCheсk(_maxbh, _minbh, value);
                     _bladeH = value;
-                    MaxMinChek(MAXBH, MINBH, value);
                 }
+            }
+        }
+
+        /// <summary>
+        /// возвращает или задает длину для RingD
+        /// </summary>
+        public double RingD
+        {
+            get => _ringD;
+            set
+            {
+                if (value < 11 || value > 45)
+                {
+                    MaxMinCheсk(_maxrd, _minrd, value);
+                }
+                else
+                {
+                    if ((_bladeH == 0) || (_chiselW == 0))
+                    {
+                        _minrd = 11;
+                        _maxrd = 45;
+                    }
+                    else
+                    {
+                        _minrd = _bladeH * 1.1;
+                        _maxrd = 0.9 * _chiselW;
+                        if (_minrd < 11)
+                        {
+                            _minrd = 11;
+                        }
+                        if (_maxrd > 45)
+                        {
+                            _maxrd = 45;
+                        }
+                    }
+                    MaxMinCheсk(_maxrd, _minrd, value);
+                    _ringD = value;
+                }
+
             }
         }
 
@@ -200,62 +240,33 @@ namespace Stameska.Model
             {
                 if (value < 25 || value > 50)
                 {
-                    throw new ArgumentException("Enter correct count");
+                    MaxMinCheсk(_maxc, _minc, value);
                 }
                 else
                 {
                     if (_bladeH == 0)
                     {
-                        MINC = 25;
-                        MAXC = 40;
+                        _minc = 25;
+                        _maxc = 50;
                     }
                     else
                     {
-                        if (MINC < 25)
-                            MINC = 25;
-                        else MINC = BladeH;
-                        if (MAXC > 40)
-                            MAXC = 40;
-                        else MAXC = _bladeH*2.5;
+                        _maxc = _bladeH * 2.5;
+                        _minc = _bladeH;
+                        if (_minc < 25)
+                        {
+                            _minc = 25;
+                        }
+                        if (_maxc > 50)
+                        {
+                            _maxc = 50;
+                        }
                     }    
+                    MaxMinCheсk(_maxc, _minc, value);
                     _chiselW = value;
-                    MaxMinChek(MAXC, MINC, value);
-                }
-            }
-        }
-
-        /// <summary>
-        /// возвращает или задает длину для RingD
-        /// </summary>
-        public double RingD
-        {
-            get => _ringD;
-            set
-            {
-                if (value < 14 || value > 36)
-                {
-                    throw new ArgumentException("Enter correct count");
-                }
-                else
-                {
-                    if ((_bladeH == 0) || (_chiselW == 0))
-                    {
-                        MINRD = 14;
-                        MAXRD = 36;
-                    }
-                    else
-                    {
-                        if (MINRD < 14)
-                            MINRD = 14;
-                        else MINRD = _bladeH * 1.1;
-                        if (MAXRD > 36)
-                            MAXRD = 36;
-                        else MAXRD = 0.9*_chiselW;
-                    }
-                    _ringD = value;
-                    MaxMinChek(MAXRD, MINRD, value);
                 }
             }
         }
     }
 }
+///RESHARPER СКАЧАТЬ

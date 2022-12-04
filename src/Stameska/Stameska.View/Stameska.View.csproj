@@ -65,6 +65,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -84,6 +85,19 @@
       <Project>{945e6f21-2a76-4dfd-8f05-c82210c276aa}</Project>
       <Name>Stameska.Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Stameska.Tests\Stameska.Tests.csproj">
+      <Project>{9791eb1a-b62a-4768-a332-118540151902}</Project>
+      <Name>Stameska.Tests</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resourses\StraightChisel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resourses\CornerChisel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
